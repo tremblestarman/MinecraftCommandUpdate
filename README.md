@@ -1,11 +1,11 @@
 # MinecraftCommandUpdate
 Update your minecraft command
-## How to use
+# How to use
 
 **namespace**: 
 ```using CommandUpdate;```
 
-### **to 1.13**: 
+## **to 1.13**: 
 > The changes see here : [preview of 1.13 commands](https://www.reddit.com/user/Dinnerbone/comments/6l6e3d/a_completely_incomplete_super_early_preview_of/), Last updated: 2017-08-17.
 - **Convert a command to 1.13**: 
 ```string result = CommandUpgrade.to1_13Command.CommandConvert(string input);```
@@ -46,7 +46,7 @@ result = "@e[score_health=1..7,limit=1,name=\"jeb_\",type=sheep,nbt={OnGround:1b
 ```
 
 
-### **to 1.11**: 
+## **to 1.11**: 
 > The changes are about entities' type , ep: `Bat -> bat`, `Armorstand -> armor_stand`.
 - **Convert a command to 1.11**:
 ```string result = CommandUpgrade.to1_11Command.CommandConvert(string input);```
@@ -65,7 +65,7 @@ result = "testfor @e[type=armor_stand]
           testfor @e[type=sheep]";
 ```
 
-### **helicopterCommand**: 
+## **helicopterCommand**: 
 > Directly convert 1.13(or lower) commands  to 1.13.
 - **Convert a command**:
 ```string result = CommandUpgrade.helicopterCommand.CommandConvert(string input);```
