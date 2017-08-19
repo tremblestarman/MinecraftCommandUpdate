@@ -15,9 +15,7 @@ input = "/execute @r[score_good_min=1] ~ ~ ~ say hi"
 result = "execute as @a[score_good=1..,sort=random] at @s ~ ~ ~ then say hi"
 ```
 - **Convert a batch of commands to 1.13**:
-```
-string result = CommandUpgrade.to1_13Command.BatchConvert(string input);
-```
+```string result = CommandUpgrade.to1_13Command.BatchConvert(string input);```
 ###### example:
 ```
 input = @"/execute @r[score_good_min=1] ~ ~ ~ say hi
@@ -26,27 +24,21 @@ result = @"execute as @a[score_good=1..,sort=random] at @s ~ ~ ~ then say hi
           scoreboard players operation @a[gamemode=adventure,limit=1] score1 = @e[distance=..1,x=0.5,z=0.5,y=0] score2"
 ```
 - **Convert argument type of blocks**:
-```
-string result = CommandUpgrade.to1_13Command.BlockCombine(string blockID, string blockData, string blockNBT);
-```
+```string result = CommandUpgrade.to1_13Command.BlockCombine(string blockID, string blockData, string blockNBT);```
 ###### example:
 ```
 blockID = "minecraft:chest", blockData = "facing=north", blockNBT = "{Items:[{Slot:0b,id:"minecraft:apple",Count:1b,Damage:0s}]}";
 result = "minecraft:chest[facing=north]{Items:[{Slot:0b,id:"minecraft:apple",Count:1b,Damage:0s}]}";
 ```
 - **Convert argument type of items**:
-```
-string result = CommandUpgrade.to1_13Command.ItemCombine(string itemID, string itemData, string itemNBT);
-```
+```string result = CommandUpgrade.to1_13Command.ItemCombine(string itemID, string itemData, string itemNBT);```
 ###### example:
 ```
 itemID = "minecraft:apple", itemData = "0", itemNBT = "{display:{Name:"my apple"}}";
 result = "minecraft:apple{display:{Name:"my apple"},Damage:0s}";
 ```
 - **Convert argument type of entity selectors**:
-```
-string result = CommandUpgrade.to1_13Command.EntitySelector(string entitySelector, string entityNBT);
-```
+```string result = CommandUpgrade.to1_13Command.EntitySelector(string entitySelector, string entityNBT);```
 ###### example:
 ```
 entitySelector = "@e[type=sheep,name=jeb_,score_health_min=1,score_health=7,c=1]", entityNBT = "{OnGround:1b}";
