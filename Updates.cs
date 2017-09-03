@@ -11,7 +11,7 @@ namespace CommandUpdate
     ///</summary>
     static public class CommandUpgrade
     {
-        ///<summary>
+         ///<summary>
         ///指令升级至1.13版本
         ///</summary>
         static public class to1_13Command
@@ -429,19 +429,25 @@ namespace CommandUpdate
                         //包含实体
                         if (i < parts.Length - 2 && parts[i + 1] == "entity")
                         {
+                            string target = "", mode = "", type = "";
+                            target = EntitySelector(parts[i + 2], null);
                             //包含绑定
                             if (i < parts.Length - 4 && parts[i + 3] == "set")
                             {
+                                mode = parts[i + 3];
                                 if (parts[i + 4] == "AffectedBlocks" || parts[i + 4] == "AffectedEntities" || parts[i + 4] == "AffectedItems" || parts[i + 4] == "QueryResult")
                                 {
                                     parts[i] = "execute store result";
+                                    type = parts[i + 4];
                                 }
                                 else if (parts[i + 4] == "SuccessCount")
                                 {
                                     parts[i] = "execute store success";
-
+                                    type = parts[i + 4];
                                 }
-                                if (i < parts.Length - 5) parts[i + 5] = EntitySelector(parts[i + 5], null);
+                                if (i < parts.Length - 5)
+                                    parts[i + 5] = EntitySelector(parts[i + 5], null);
+                                    
                                 parts = DelectArray(parts, i + 4);
                                 parts = DelectArray(parts, i + 3);
                                 parts = DelectArray(parts, i + 2);
@@ -450,13 +456,16 @@ namespace CommandUpdate
                             //包含清除
                             else if (i < parts.Length - 4 && parts[i + 3] == "clear")
                             {
+                                mode = parts[i + 3];
                                 if (parts[i + 4] == "AffectedBlocks" || parts[i + 4] == "AffectedEntities" || parts[i + 4] == "AffectedItems" || parts[i + 4] == "QueryResult")
                                 {
                                     parts[i] = "execute store result";
+                                    type = parts[i + 4];
                                 }
                                 else if (parts[i + 4] == "SuccessCount")
                                 {
                                     parts[i] = "execute store success";
+                                    type = parts[i + 4];
 
                                 }
                                 parts = DelectArray(parts, i + 4);
@@ -464,21 +473,26 @@ namespace CommandUpdate
                                 parts = DelectArray(parts, i + 2);
                                 parts = DelectArray(parts, i + 1);
                             }
+                            parts[i] = "#(target:" + target + ", mode:" + mode + ", type:" + type + ". you need to edit stats manually!) " + parts[i];
                         }
                         //包含方块
-                        if (i < parts.Length - 2 && parts[i + 1] == "block")
+                        if (i < parts.Length - 4 && parts[i + 1] == "block")
                         {
+                            string target = "", mode = "", type = "";
+                            target = "[x=" + parts[i + 2] + ",y=" + parts[i+3] + ",z=" + parts[i+4] + "]";
                             //包含绑定
                             if (i < parts.Length - 6 && parts[i + 5] == "set")
                             {
+                                mode = parts[i + 5];
                                 if (parts[i + 6] == "AffectedBlocks" || parts[i + 6] == "AffectedEntities" || parts[i + 6] == "AffectedItems" || parts[i + 6] == "QueryResult")
                                 {
-                                    parts[i] = "#清除stats无法转化";
-
+                                    parts[i] = "execute store result";
+                                    type = parts[i + 6];
                                 }
                                 else if (parts[i + 6] == "SuccessCount")
                                 {
-                                    parts[i] = "#清除stats无法转化";
+                                    parts[i] = "execute store success";
+                                    type = parts[i + 6];
                                 }
                                 if (i < parts.Length - 7) parts[i + 7] = EntitySelector(parts[i + 7], null);
                                 parts = DelectArray(parts, i + 6);
@@ -491,14 +505,16 @@ namespace CommandUpdate
                             //包含清除
                             else if (i < parts.Length - 6 && parts[i + 5] == "clear")
                             {
+                                mode = parts[i + 5];
                                 if (parts[i + 6] == "AffectedBlocks" || parts[i + 6] == "AffectedEntities" || parts[i + 6] == "AffectedItems" || parts[i + 6] == "QueryResult")
                                 {
-                                    parts[i] = "#清除stats无法转化";
+                                    parts[i] = "execute store result";
+                                    type = parts[i + 6];
                                 }
                                 else if (parts[i + 6] == "SuccessCount")
                                 {
-                                    parts[i] = "#清除stats无法转化";
-
+                                    parts[i] = "execute store success";
+                                    type = parts[i + 6];
                                 }
                                 parts = DelectArray(parts, i + 6);
                                 parts = DelectArray(parts, i + 5);
@@ -507,6 +523,7 @@ namespace CommandUpdate
                                 parts = DelectArray(parts, i + 2);
                                 parts = DelectArray(parts, i + 1);
                             }
+                            parts[i] = "#(target:" + target + ", mode:" + mode + ", type:" + type + ". you need to edit stats manually!) " + parts[i];
                         }
                     }
                     //enchant✔ ：enchant [<entity>]
@@ -771,11 +788,11 @@ namespace CommandUpdate
             static public string BatchConvert(string input)
             {
                 string[] commands = input.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                for(int i = 0; i < commands.Length; i++)
+                for (int i = 0; i < commands.Length; i++)
                 {
                     commands[i] = CommandConvert(commands[i]);
                 }
-                input = String.Join(Environment.NewLine,commands);
+                input = String.Join(Environment.NewLine, commands);
                 return input;
             }
 
@@ -1017,6 +1034,14 @@ namespace CommandUpdate
                 for (int index = strings.Length - 1; index > i; index--)
                 {
                     final = DelectArray(final, index);
+                }
+
+                var match = Regex.Matches(final[i], @"((?i)(@[earp]\[.*\])" + "|@[earp])");
+                //对nbt中的选择器进行转化
+                for(int j = 0; j < match.Count; j++)
+                {
+                    
+                    final[i] = final[i].Replace(match[j].Value, EntitySelector(match[j].Value, null));
                 }
                 return final;
             }
