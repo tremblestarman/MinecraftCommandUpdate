@@ -11,7 +11,7 @@ namespace CommandUpdate
     ///</summary>
     static public class CommandUpgrade
     {
-         ///<summary>
+        ///<summary>
         ///指令升级至1.13版本
         ///</summary>
         static public class to1_13Command
@@ -411,14 +411,24 @@ namespace CommandUpdate
                             }
                         }
                     }
-                    //xp✔ ：xp <level> [<entity>]
+                    //xp✔ ：xp <level> [<entity>] -> experience add <players> <amount> [points|levels]
                     else if (parts[i] == "xp" || parts[i] == "/xp")
                     {
                         //包含实体
                         if (i < parts.Length - 2)
                         {
-                            parts[i + 2] = EntitySelector(parts[i + 2], null);
+                            parts[i] = parts[i].Replace("xp", "experience");
+
+                            if (Regex.Match(parts[i + 1], @"\d*[lL]$").Success)
+                            {
+                                string value = new Regex(@"[lL]$").Replace(parts[i + 1], "");
+                                parts[i + 1] = EntitySelector(parts[i + 2], null) + " " + value + " levels";
+                            }
+                            else
+                                parts[i + 1] = EntitySelector(parts[i + 2], null) + " " + parts[i + 1] + " points";
+                            parts = DelectArray(parts, i + 2);
                         }
+                        //包含等级
                     }
                     //stats✔ ：stats entity [<entity>] <stats> set [<entity>]
                     //          stats block <x> <y> <z> <stats> set [<entity>]
@@ -447,7 +457,7 @@ namespace CommandUpdate
                                 }
                                 if (i < parts.Length - 5)
                                     parts[i + 5] = EntitySelector(parts[i + 5], null);
-                                    
+
                                 parts = DelectArray(parts, i + 4);
                                 parts = DelectArray(parts, i + 3);
                                 parts = DelectArray(parts, i + 2);
@@ -479,7 +489,7 @@ namespace CommandUpdate
                         if (i < parts.Length - 4 && parts[i + 1] == "block")
                         {
                             string target = "", mode = "", type = "";
-                            target = "[x=" + parts[i + 2] + ",y=" + parts[i+3] + ",z=" + parts[i+4] + "]";
+                            target = "[x=" + parts[i + 2] + ",y=" + parts[i + 3] + ",z=" + parts[i + 4] + "]";
                             //包含绑定
                             if (i < parts.Length - 6 && parts[i + 5] == "set")
                             {
@@ -1038,9 +1048,9 @@ namespace CommandUpdate
 
                 var match = Regex.Matches(final[i], @"((?i)(@[earp]\[.*\])" + "|@[earp])");
                 //对nbt中的选择器进行转化
-                for(int j = 0; j < match.Count; j++)
+                for (int j = 0; j < match.Count; j++)
                 {
-                    
+
                     final[i] = final[i].Replace(match[j].Value, EntitySelector(match[j].Value, null));
                 }
                 return final;
